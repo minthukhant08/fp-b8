@@ -1,4 +1,4 @@
-import NextAuth, { AuthOptions } from "next-auth"
+import NextAuth, { AuthOptions, User } from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import authAPI from '@/api/auth'
 import jwtDecode from 'jsonwebtoken'
@@ -19,12 +19,11 @@ export const authOptions: AuthOptions = {
 					})
 
 					const userData = res.data.data as UserResponse
-
 					if (res.data.success === 1) {
 						const decoded = jwtDecode.decode(
 							userData.accessToken
 						) as jwtDecode.JwtPayload
-						const user = {
+						const user: User = {
 							id: decoded.id,
 							name: decoded.name,
 							email: decoded.email,
@@ -32,7 +31,6 @@ export const authOptions: AuthOptions = {
 							refreshToken: userData.refreshToken,
 							expires_in: decoded.exp,
 						}
-
 						return user
 					}
 				} catch (error) {
@@ -49,17 +47,22 @@ export const authOptions: AuthOptions = {
 	callbacks: {
 		async jwt({ token, user }) {
 			if (user && user.expires_in) {
+				console.log("true.........")
 				const expiresIn = user.expires_in
 				token.accessToken = user.accessToken
 				token.refreshToken = user.refreshToken
 				token.accessTokenExpires = expiresIn
 			}
+			console.log("merged......")
+			console.log({ ...user, ...token })
 			return { ...user, ...token }
 		},
 		async session({ session, token }) {
+			console.log(token, 'token.......')
 			if (token) {
 				session.user = token
 			}
+			console.log(session, 'session..')
 			return session
 		},
 	},
