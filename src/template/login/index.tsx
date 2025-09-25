@@ -35,7 +35,7 @@ export default function Login() {
     const login = (values: z.infer < typeof loginSchema >) => {
         console.log(values)
         signIn('credentials', {...values, redirect: false}).then(() => {
-            route.push("/dashboard")
+            route.push("/employees")
         })
     }
   return (

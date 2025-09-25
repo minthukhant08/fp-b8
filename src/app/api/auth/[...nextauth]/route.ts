@@ -47,27 +47,22 @@ export const authOptions: AuthOptions = {
 	callbacks: {
 		async jwt({ token, user }) {
 			if (user && user.expires_in) {
-				console.log("true.........")
 				const expiresIn = user.expires_in
 				token.accessToken = user.accessToken
 				token.refreshToken = user.refreshToken
 				token.accessTokenExpires = expiresIn
 			}
-			console.log("merged......")
-			console.log({ ...user, ...token })
 			return { ...user, ...token }
 		},
 		async session({ session, token }) {
-			console.log(token, 'token.......')
 			if (token) {
 				session.user = token
 			}
-			console.log(session, 'session..')
 			return session
 		},
 	},
     pages: {
-		signIn: '/dashboard',
+		signIn: '/employees',
 		signOut: '/',
 		error: '/',
 	},
